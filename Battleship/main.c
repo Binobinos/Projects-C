@@ -87,12 +87,17 @@ void main_play(){
     Основной цикл игры.
     */
     short is_orel, temp_exit = 1, player_setting_move;
-    const char empty_char = '.', player_ship = 'O', broken_ship = '@', break_ship = 'X';
+    const char empty_char = '.', player_ship = 'O', broken_ship = 'X', break_ship = '@';
+    int ship[4][2] = {{0, 0}, {0, 1}, {0, 2}, {0, 3}};
     const short board_size_y = 10, board_size_x = 10;
-    char board[board_size_y][board_size_x];
+    char player_board[board_size_y][board_size_x];
+    char bot_board[board_size_y][board_size_x];
+    int bot_move_map[board_size_y][board_size_x];
     for (short i = 0; i < board_size_y; i++){ // Инициализация доски
         for (short j = 0; j < board_size_x; j++){
-            board[i][j] = empty_char;
+            player_board[i][j] = empty_char;
+            bot_board[i][j] = empty_char;
+            bot_move_map[i][j] = 1;
         }
     }
     printf("Привет! Я Джо и твой соперник.\n");
@@ -118,7 +123,7 @@ void main_play(){
     printf("По оси x указаны буквы а по оси y цифры. \n");
     printf("Чтобы обратится к определенной клетке сначала напиши букву а потом цифру.\n");
     printf("Например C3 или I7.\n");
-    print_board(board_size_y, board_size_x, board);
+    print_board(board_size_y, board_size_x, player_board);
     printf("\n\n");
     temp_exit = 1;
     while (temp_exit){
@@ -134,18 +139,48 @@ void main_play(){
     printf("Окей.. Я так расставил как ты никогда не узнаешь.\n");
     printf("Ну ладно. Хватит пустых слов. Давай сыграем!\n");
     short game_loop = 1;
+    char move_x;
+    int bot_x, bot_y, move_y, move_player;
+    char move_char = break_ship;
     while (game_loop){
-        char move_x;
-        int move_y;
-        printf("Куда стреляем капитан?(Буква+цифра): ");
-        scanf(" %c%d", &move_x, &move_y);
-        move_x = toupper(move_x);
-        printf("Вы ввели %c%d \n", move_x, move_y);
-        if ('A' > move_x || move_x > 'J' || 1 > move_y || move_y > 8) {
-            printf("НЕ Координаты корректные");
+        move_player = 1;
+        printf("\n\nПОЛЕ ДЖО\n");
+        print_board(board_size_y, board_size_x, bot_board);
+        printf("\n\nВАШЕ ПОЛЕ\n");
+        print_board(board_size_y, board_size_x, player_board);
+        while (move_player){
+            printf("Куда стреляем капитан?(Буква+цифра): ");
+            scanf(" %c%d", &move_x, &move_y);
+            move_x = toupper(move_x);
+            printf("Вы ввели %c%d \n", move_x, move_y);
+            if ('A' > move_x || move_x > 'J' || 1 > move_y || move_y > 10) {
+                printf("НЕ Координаты корректные. пожалуйста введите снова");
+            }
+            else{
+                move_player = 0;
+            }
+        move_char = player_ship;
+        for (int i = 0; i < 4; i++){
+            if (ship[i][0] == move_y - 1 && ship[i][1] == move_x - 'A'){
+                move_char = broken_ship;
+            }
+        }
+        bot_board[move_y - 1][move_x - 'A'] = move_char;
+        bot_x = randint(0, 9);
+        bot_y = randint(0, 9);
+        printf("Мой Ход %c%d",(bot_x + 'A'), (bot_y + 1));
+        move_char = player_ship;
+        for (int i = 0; i < 4; i++){
+            if (ship[i][0] == bot_y && ship[i][1] == bot_x){
+                move_char = broken_ship;
+            }
+        }
+        player_board[bot_y][bot_x] = move_char;
+        bot_move_map[bot_y][bot_x] = 0;
+
         }
         // TODO: Написать бесконечную проверку пока не будут верные координаты. Ход игрока пока он попадает. Ходы Бота и проверку на выигрыш
-        game_loop = 0;
+        // game_loop = 0;
     }
     }
 }
