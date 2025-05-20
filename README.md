@@ -6,6 +6,7 @@
 
 1. [Hello World](helloworld/helloworld.c) — Первая программа на C.
 2. [Calculator](calculator/calculator.c) — Калькулятор
+3. [Naval battle](Naval%20battle/main.c) — Консольная игра Морской Бой
 ## 🔧 Как компилировать и запускать?
 
 ```bash
