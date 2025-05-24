@@ -40,34 +40,28 @@ void print_board(int rows, int cols, char board[rows][cols]){
     }
 }
 
-int randint(int min, int max){
-    /*
-    Возвращает случайное число в диапазоне [min, max]
-    */
-    return rand() % (max - min + 1) + min;
-}
-
 
 void help_menu(){
     /*
     Выводит стартовое сообщение с правилами
     */
-    printf("Привет. Это морской бой от Binobinos!\n");
-    printf("В этой игре твоя задача уничтожить все корабли соперника, пока он не уничтожил твои.\n");
-    printf("Давай расскажу про правила:\n");
-    printf("Игровое поле имеет размер 10 на 10 клеток\n");
-    printf("В твоем распоряжении флот из 10 кораблей. Ты расставляешь их на поле\n");
-    printf("Корабли не могут быть соприкасаться друг с другом\n");
-    printf("после расстановки кораблей бот также расставляет свои корабли.\n");
-    printf("Не ты, не он не ведите корабли друг друга.\n");
+    printf("\tПривет. Это морской бой от Binobinos!\n");
+    printf("\tВ этой игре твоя задача уничтожить все корабли соперника, пока он не уничтожил твои.\n");
+    printf("Давай расскажу про правила:\n\n");
+    printf("- Игровое поле имеет размер 10 на 10 клеток. (A3, C6, J3 и тд)\n");
+    printf("- В твоем распоряжении флот из 10 кораблей. Ты расставляешь их на поле\n");
+    printf("- Корабли не могут быть соприкасаться друг с другом\n");
+    printf("- после расстановки кораблей бот также расставляет свои корабли.\n");
+    printf("- Не ты, не он не ведите корабли друг друга.\n");
     printf("после начинается игра. Вы подбрасываете монетку кто первый ходит\n");
     printf("Далее ходит тот кому выпал орел.\n");
     printf("Игроки поочередно называют координату удара. Например A1\n");
-    printf("Если вы попали в корабль то он помечается как @, а клетки во круг него помечаются X\n");
-    printf("Если игрок промазал то клетка также помечается символом X.\n");
-    printf("Ваша задача расставить свой флот так, что вы успеете первым уничтожить флот противника чем он уничтожит вас\n");
+    printf("- Если вы попали в корабль то он помечается как @\n");
+    printf("- Если игрок промазал то клетка помечается символом O.\n");
+    printf("- Если игрок сбил корабль то клетки корабля помечается символами #.\n");
+    printf("Ваша задача расставить свой флот так, что вы успеете первым уничтожить флот противника чем он уничтожит ваш\n");
     printf("Веселитесь и найдите лучшую стратегию!\n");
-    printf("Удачи!... by: Binobinos\n");
+    printf("Удачи!... \n\tby: Binobinos\n");
 }
 
 void main_menu(){
@@ -76,35 +70,42 @@ void main_menu(){
     */
     printf("\n\n\tГлавное меню. Выбери действие:\n\n");
     printf("- Начать Игру\n");
-    // printf("- Вывести справку\n");
     printf("- Показать правила\n");
     printf("- Выход\n\n");
     printf("Выберете Действие: ");
 }
 
-void main_play(){
+
+void game_help_menu(){
     /*
-    Основной цикл игры.
+    Выводит краткую справку во время игры
     */
-    short is_orel, temp_exit = 1, player_setting_move;
-    const char empty_char = '.', player_ship = 'O', broken_ship = 'X', break_ship = '@';
-    int ship[4][2] = {{0, 0}, {0, 1}, {0, 2}, {0, 3}};
-    const short board_size_y = 10, board_size_x = 10;
-    char player_board[board_size_y][board_size_x];
-    char bot_board[board_size_y][board_size_x];
-    int bot_move_map[board_size_y][board_size_x];
-    for (short i = 0; i < board_size_y; i++){ // Инициализация доски
-        for (short j = 0; j < board_size_x; j++){
-            player_board[i][j] = empty_char;
-            bot_board[i][j] = empty_char;
-            bot_move_map[i][j] = 1;
-        }
-    }
+    printf("\n\nА перед началом познакомлю тебя с доской\n");
+    printf("Перед тобой поле размером 10 на 10 клеток.\n");
+    printf("По оси X указаны буквы, а по оси Y цифры. \n");
+    printf("Чтобы обратится к определенной клетке сначала напиши букву, а потом цифру.\n");
+    printf("Например C3 или I7.\n");
+    print_board(board_size_y, board_size_x, player_board);
+    printf("\n\n");
+}
+
+int randint(int min, int max){
+    /*
+    Возвращает случайное число в диапазоне [min, max]
+    */
+    return rand() % (max - min + 1) + min;
+}
+
+void ChoosingOrderGame(int* move){
+    /*
+    Игровая часть выбора хода и приветствия
+    */
+    int player_move = randint(0, 1), temp_exit = 1, is_orel;
     printf("Привет! Я Джо и твой соперник.\n");
     printf("Сегодня мы с тобой сразимся на поле битвы.");
     printf("Давай решим кто играет первым.\n");
     while (temp_exit){
-         printf("Ты ставишь на орла или на решку?\nОрел - 1\nРешка - 0\n- Ваш выбор: ");
+        printf("Ты ставишь на орла или на решку?\nОрел - 1\nРешка - 0\n- Ваш выбор: ");
         scanf("%d", &is_orel);
         switch (is_orel){
             case 0: printf("Тогда я ставлю на Орла") ;temp_exit = 0; break;
@@ -112,20 +113,24 @@ void main_play(){
             default: printf("Ей, чувак.. Давай ты выберешь Орла или решку!"); break;
         }
     }
-    int player_move = randint(0, 1);
     printf("\nВЫПАДАЕТ: ");
-    if (player_move){printf("ОРЕЛ\n");}
-    else {printf("РЕШКА\n");}
-    if (player_move == is_orel) {printf("Оу. Ты ходишь первым");}
-    else {printf("Ха Ха. Сейчас хожу Я!");}
-    printf("\n\nА перед началом познакомлю тебя с доской\n");
-    printf("Перед тобой поле размером 10 на 10 клеток.\n");
-    printf("По оси x указаны буквы а по оси y цифры. \n");
-    printf("Чтобы обратится к определенной клетке сначала напиши букву а потом цифру.\n");
-    printf("Например C3 или I7.\n");
-    print_board(board_size_y, board_size_x, player_board);
-    printf("\n\n");
-    temp_exit = 1;
+    if (player_move) {
+        printf("ОРЕЛ\n");
+    }
+    else {
+        printf("РЕШКА\n");
+    }
+    if (player_move == is_orel) {
+        printf("Оу. Ты ходишь первым");
+    }
+    else {
+        printf("Ха Ха. Сейчас хожу Я!");
+    }
+    *move = player_move == is_orel;
+}
+
+void Placement(){
+    int temp_exit = 1;
     while (temp_exit){
          printf("Выбери режим расстановки:\nРучной - 1\nАвтоматически - 0\n- Ваш выбор: ");
         scanf("%d", &player_setting_move);
@@ -137,11 +142,36 @@ void main_play(){
     printf("\nОкей. Расстановка законченна. Теперь я расставляю!\n");
     // TODO: Сделать автоматическую расстановку бота
     printf("Окей.. Я так расставил как ты никогда не узнаешь.\n");
+}
+
+
+void main_play(){
+    /*
+    Основной цикл игры.
+    */
+    // Инициализация переменных
+    const int board_size_y = 10, board_size_x = 10;
+    const char empty_char = '.', player_ship = 'O', broken_ship = 'X', break_ship = '@';
+    int is_orel, temp_exit = 1, player_setting_move, game_loop = 1, bot_x, bot_y, move_y, move_player;
+    int ship[10][4][2] = {{{0, 0}, {0, 1}, {0, 2}, {0, 3}}};
+    int bot_move_map[board_size_y][board_size_x];
+    char player_board[board_size_y][board_size_x], bot_board[board_size_y][board_size_x];
+    char move_char, move_x;
+    move_char = break_ship;
+
+    for (short i = 0; i < board_size_y; i++){ // Инициализация доски
+        for (short j = 0; j < board_size_x; j++){
+            player_board[i][j] = empty_char;
+            bot_board[i][j] = empty_char;
+            bot_move_map[i][j] = 1;
+        }
+    }
+
+    ChoosingOrderGame(&is_orel); // Выбор порядка игры
+    game_help_menu(); // Справка
+    Placement() // Расстановка
+    // Основной цикл Игры
     printf("Ну ладно. Хватит пустых слов. Давай сыграем!\n");
-    short game_loop = 1;
-    char move_x;
-    int bot_x, bot_y, move_y, move_player;
-    char move_char = break_ship;
     while (game_loop){
         move_player = 1;
         printf("\n\nПОЛЕ ДЖО\n");
@@ -156,7 +186,7 @@ void main_play(){
             if ('A' > move_x || move_x > 'J' || 1 > move_y || move_y > 10) {
                 printf("НЕ Координаты корректные. пожалуйста введите снова");
             }
-            else{
+            else {
                 move_player = 0;
             }
         move_char = player_ship;
